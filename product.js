@@ -1,93 +1,178 @@
 class Product {
-	constructor(title, imgurl, desc, price) {
+	// title = 'DEFAULT';
+	// imageUrl;
+	// description;
+	// price;
+
+	constructor(title, image, desc, price) {
 		this.title = title;
-		this.imgurl = imgurl;
-		this.desc = desc;
+		this.imageUrl = image;
+		this.description = desc;
 		this.price = price;
 	}
 }
 
-class ProdElement {
-	constructor(product) {
+class ElementAttribute {
+	constructor(attrName, attrValue) {
+		this.name = attrName;
+		this.value = attrValue;
+	}
+}
+
+class Component {
+	constructor(renderHookId, shouldRender = true) {
+		this.hookId = renderHookId;
+		if (shouldRender) {
+			this.render();
+		}
+	}
+
+	render() {}
+
+	createRootElement(tag, cssClasses, attributes) {
+		const rootElement = document.createElement(tag);
+		if (cssClasses) {
+			rootElement.className = cssClasses;
+		}
+		if (attributes && attributes.length > 0) {
+			for (const attr of attributes) {
+				rootElement.setAttribute(attr.name, attr.value);
+			}
+		}
+		document.getElementById(this.hookId).append(rootElement);
+		return rootElement;
+	}
+}
+
+class ShoppingCart extends Component {
+	items = [];
+
+	set cartItems(value) {
+		this.items = value;
+		this.totalOutput.innerHTML = `<h2>Total: \$${this.totalAmount.toFixed(
+			2
+		)}</h2>`;
+	}
+
+	get totalAmount() {
+		const sum = this.items.reduce(
+			(prevValue, curItem) => prevValue + curItem.price,
+			0
+		);
+		return sum;
+	}
+
+	constructor(renderHookId) {
+		super(renderHookId);
+	}
+
+	addProduct(product) {
+		const updatedItems = [...this.items];
+		updatedItems.push(product);
+		this.cartItems = updatedItems;
+	}
+
+	render() {
+		const cartEl = this.createRootElement('section', 'cart');
+		cartEl.innerHTML = `
+		<h2>Total: \$${0}</h2>
+		<button>Order Now!</button>
+	  `;
+		this.totalOutput = cartEl.querySelector('h2');
+	}
+}
+
+class ProductItem extends Component {
+	constructor(product, renderHookId) {
+		super(renderHookId, false);
 		this.product = product;
+		this.render();
 	}
 
 	addToCart() {
-		console.log('object is added ...');
-		console.log(this.product);
+		App.addProductToCart(this.product);
 	}
 
-	createSingleProduct() {
-		const prodEl = document.createElement('li');
-		prodEl.className = 'product-item';
+	render() {
+		const prodEl = this.createRootElement('li', 'product-item');
 		prodEl.innerHTML = `
-    <div>
-    <img src='${this.product.imgurl}' alt='${this.product.title}'>
-    <div class="product-item__content">
-  <h2>${this.product.price}</h2>
-  <h1>${this.product.desc}</h1>
-  <button>add to cart</button>
-    </div>
-    </div>
-    `;
-		const btnadd = prodEl.querySelector('button');
-		btnadd.addEventListener('click', this.addToCart.bind(this));
-
-		return prodEl;
+		  <div>
+			<img src="${this.product.imageUrl}" alt="${this.product.title}" >
+			<div class="product-item__content">
+			  <h2>${this.product.title}</h2>
+			  <h3>\$${this.product.price}</h3>
+			  <p>${this.product.description}</p>
+			  <button>Add to Cart</button>
+			</div>
+		  </div>
+		`;
+		const addCartButton = prodEl.querySelector('button');
+		addCartButton.addEventListener('click', this.addToCart.bind(this));
 	}
 }
-class ShoppingCart {
-	items = [];
-	render() {
-		const cartEl = document.createElement('section');
-		cartEl.innerHTML = `
-        <h2>Total Amount :\$${0} </h2>
-        <button>Order now </button>
 
-        `;
-		cartEl.className = 'cart';
-		return cartEl;
+class ProductList extends Component {
+	fetchProducts() {
+		this.products = [
+			new Product(
+				'A Pillow',
+				'https://www.maxpixel.net/static/photo/2x/Soft-Pillow-Green-Decoration-Deco-Snuggle-1241878.jpg',
+				'A soft pillow!',
+				19.99
+			),
+			new Product(
+				'A Carpet',
+				'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Ardabil_Carpet.jpg/397px-Ardabil_Carpet.jpg',
+				'A carpet which you might like - or not.',
+				89.99
+			),
+		];
+		this.renderProducts();
 	}
-}
-class ProductList {
-	products = [
-		new Product(
-			'pillow',
-			'https://c-static.smartphoto.com/structured/repositoryimage/productcategory/fun_ideas/pillow/topimages/0013/image/carrousel9.jpg',
-			19,
-			'soft pillow'
-		),
-		new Product(
-			'Carpet',
-			'https://www.tapislux.com/2101-medium_default/carpet-modern-design-border-ornament-marble-optical-black-red-white.jpg',
-			40,
-			'soft Carpet'
-		),
-	];
-	constructor() {}
-	render() {
-		const prodList = document.createElement('ul');
-		prodList.className = 'product-list';
+
+	constructor(renderHookId) {
+		super(renderHookId);
+		this.fetchProducts();
+	}
+
+	renderProducts() {
 		for (const prod of this.products) {
-			const prodItem = new ProdElement(prod);
-			const prodEl = prodItem.createSingleProduct();
-			prodList.append(prodEl);
+			new ProductItem(prod, 'prod-list');
 		}
-		return prodList;
+	}
+
+	render() {
+		this.createRootElement('ul', 'product-list', [
+			new ElementAttribute('id', 'prod-list'),
+		]);
+		if (this.products && this.products.length > 0) {
+			this.renderProducts();
+		}
 	}
 }
 
 class Shop {
+	constructor() {
+		this.render();
+	}
+
 	render() {
-		const renderHook = document.getElementById('app');
-		const cart = new ShoppingCart();
-		const cartEl = cart.render();
-		const productList = new ProductList();
-		const prodListEl = productList.render();
-		renderHook.append(cartEl);
-		renderHook.append(prodListEl);
+		this.cart = new ShoppingCart('app');
+		new ProductList('app');
 	}
 }
 
-const shop = new Shop();
-shop.render();
+class App {
+	static cart;
+
+	static init() {
+		const shop = new Shop();
+		this.cart = shop.cart;
+	}
+
+	static addProductToCart(product) {
+		this.cart.addProduct(product);
+	}
+}
+
+App.init();

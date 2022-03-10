@@ -20,6 +20,7 @@ class Component {
 		}
 	}
 	render() {}
+
 	createRootElement(tag, cssClasses, attribute) {
 		const rootElement = document.createElement(tag);
 		if (cssClasses) {
@@ -96,12 +97,6 @@ class Cart extends Component {
 	}
 }
 class ProductList extends Component {
-	products = [];
-	constructor(renderHookId) {
-		super(renderHookId);
-		this.fetchProducts();
-	}
-
 	fetchProducts() {
 		this.products = [
 			new Product(
@@ -119,6 +114,12 @@ class ProductList extends Component {
 		];
 		this.renderProducts();
 	}
+
+	constructor(renderHookId) {
+		super(renderHookId);
+		this.fetchProducts();
+	}
+
 	renderProducts() {
 		for (const prod of this.products) {
 			new ProdEL(prod, 'prod-list');
@@ -128,16 +129,15 @@ class ProductList extends Component {
 		this.createRootElement('ul', 'product-list', [
 			new ElementAttribute('id', 'prod-list'),
 		]);
-
 		if (this.products && this.products.length > 0) {
 			this.renderProducts();
 		}
 	}
 }
 
-class Shopping extends Component {
+class Shopping {
 	constructor() {
-		super();
+		this.render();
 	}
 	render() {
 		this.cart = new Cart('app');
@@ -150,7 +150,6 @@ class App {
 	static cart;
 	static init() {
 		const shoppingRender = new Shopping();
-
 		this.cart = shoppingRender.cart;
 	}
 	static addItemToCart(product) {
