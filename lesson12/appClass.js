@@ -9,7 +9,13 @@ class ProjectItem {
 
 	connectMoreInfoButton() {}
 
-	connectSwitchButton() {}
+	connectSwitchButton() {
+		const projectItemElement = document.getElementById(this.id);
+		const switchButton = projectItemElement.querySelector(
+			'button:last-of-type'
+		);
+		switchButton.addEventListener('click');
+	}
 }
 
 class ProjectList {
@@ -20,6 +26,9 @@ class ProjectList {
 			this.projects.push(new ProjectItem(projItem.id));
 		}
 		console.log(this.projects);
+	}
+	siwtchProject(projectId) {
+		this.projects = this.projects.filter((p) => p.id !== projectId);
 	}
 }
 
