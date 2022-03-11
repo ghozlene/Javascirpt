@@ -1,4 +1,24 @@
-class toolTrip {}
+class ToolTip {
+	constructor(closeNotifierFunction) {
+		this.closeNotifier = closeNotifierFunction;
+	}
+	closeToolTip = () => {
+		this.detach();
+		this.closeNotifier();
+	};
+	detach() {
+		this.element.remove();
+	}
+
+	attach() {
+		const toolTipElement = document.createElement('div');
+		toolTipElement.className = 'card';
+		toolTipElement.textContent = 'toolTip';
+		toolTipElement.addEventListener('click', this.closeToolTip);
+		this.element = toolTipElement;
+		document.body.append(toolTipElement);
+	}
+}
 
 class DOMHelper {
 	static clearEventListeners(element) {
@@ -13,6 +33,7 @@ class DOMHelper {
 	}
 }
 class ProjectItem {
+	hasActiveToolTipe = false;
 	constructor(id, updateProjectListsFunction, type) {
 		this.id = id;
 		this.updateProjectListsHandler = updateProjectListsFunction;
@@ -20,7 +41,24 @@ class ProjectItem {
 		this.connectSwitchButton(type);
 	}
 
-	connectMoreInfoButton() {}
+	showMoreInfoHandler() {
+		if (this.hasActiveToolTipe) {
+			return;
+		}
+		const toolTip = new ToolTip(() => {
+			this.hasActiveToolTipe = false;
+		});
+		toolTip.attach();
+		this.hasActiveToolTipe = true;
+	}
+
+	connectMoreInfoButton() {
+		const projectItemElement = document.getElementById(this.id);
+		const moreInfoBtn = projectItemElement.querySelector(
+			'button:first-of-type'
+		);
+		moreInfoBtn.addEventListener('click', this.showMoreInfoHandler);
+	}
 
 	connectSwitchButton(type) {
 		const projectItemElement = document.getElementById(this.id);
