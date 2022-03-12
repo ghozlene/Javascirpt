@@ -1,9 +1,17 @@
 const btn = document.querySelector('button');
 
-function showMessage() {
-	console.log('this event is run after the loop (async code)');
+function trackUserHandler() {
+	navigator.geolocation.getCurrentPosition(
+		(posData) => {
+			console.log(posData);
+		},
+		(error) => {
+			console.log(error);
+		}
+	);
+	console.log('this is my position');
 }
-btn.addEventListener('click', showMessage);
+btn.addEventListener('click', trackUserHandler);
 
 let result = 0;
 for (let i = 0; i < 10; i++) {
