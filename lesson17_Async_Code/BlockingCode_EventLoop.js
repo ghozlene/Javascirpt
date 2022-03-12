@@ -26,28 +26,29 @@ const setTimer = (duration) => {
 };
 
 /**
- * ! Chaining Multiple Promises
+ * ! using async/await
  */
-function trackUserHandler() {
-	let positionData;
-	getPosition()
-		.then((posData) => {
-			positionData = posData;
-			return setTimer(2000);
-		})
-		.catch((err) => {
-			console.log(err);
-			return 'on we go...';
-		})
-		.then((data) => {
-			console.log(data, positionData);
-		});
-
-	setTimer(1000).then(() => {
-		console.log('time is up');
-	});
-	console.log('this is my position');
+async function trackUserHandler() {
+	const positionData = await getPosition();
+	const data = await setTimer(3000);
+	console.log(data, positionData);
+	// .then((posData) => {
+	// 	positionData = posData;
+	// 	return setTimer(2000);
+	// })
+	// .catch((err) => {
+	// 	console.log(err);
+	// 	return 'on we go...';
+	// })
+	// .then((data) => {
+	// 	console.log(data, positionData);
+	// });
 }
+// 	setTimer(1000).then(() => {
+// 		console.log('time is up');
+// 	});
+// 	console.log('this is my position');
+//
 
 btn.addEventListener('click', trackUserHandler);
 
