@@ -1,20 +1,27 @@
 const btn = document.querySelector('button');
 
+const setTimer = (duration) => {
+	const promise = new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve('done !');
+		}, duration);
+	});
+	return promise;
+};
+
 function trackUserHandler() {
 	navigator.geolocation.getCurrentPosition(
 		(posData) => {
-			setTimeout(() => {
-				console.log(posData);
-			}, 2000);
+			setTimer(2000).then((data) => console.log(data, posData));
 		},
 
 		(error) => {
 			console.log(error);
 		}
 	);
-	setTimeout(() => {
+	setTimer(0).then(() => {
 		console.log('time is up');
-	}, 0);
+	});
 	console.log('this is my position');
 }
 
