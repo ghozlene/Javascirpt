@@ -5,26 +5,30 @@ const fetchButton = document.querySelector('#available-posts button');
 const postList = document.querySelector('ul');
 //Sending HTTP REQUEST
 function sendHttpRequest(method, url, data) {
-	const promise = new Promise((resolve, reject) => {
-		const xhr = new XMLHttpRequest();
-		xhr.open(method, url);
+	// const promise = new Promise((resolve, reject) => {
+	// 	const xhr = new XMLHttpRequest();
+	// 	xhr.open(method, url);
 
-		xhr.responseType = 'json';
-		xhr.onload = () => {
-			if (xhr.status >= 200 && xhr.status < 300) {
-				resolve(xhr.response);
-			} else {
-				reject(new Error('something goes wrong '));
-			}
-		};
-		//this is trigger just when for example connexion not for a server error i mean
+	// 	xhr.responseType = 'json';
+	// 	xhr.onload = () => {
+	// 		if (xhr.status >= 200 && xhr.status < 300) {
+	// 			resolve(xhr.response);
+	// 		} else {
+	// 			reject(new Error('something goes wrong '));
+	// 		}
+	// 	};
+	// 	//this is trigger just when for example connexion not for a server error i mean
 
-		xhr.onerror = () => {
-			reject(new Error('failed to send a request '));
-		};
-		xhr.send(JSON.stringify(data));
+	// 	xhr.onerror = () => {
+	// 		reject(new Error('failed to send a request '));
+	// 	};
+	// 	xhr.send(JSON.stringify(data));
+	// });
+	// return promise;
+
+	return fetch(url).then((response) => {
+		return response.json();
 	});
-	return promise;
 }
 //Create GET REQUEST
 async function fetchPost() {
