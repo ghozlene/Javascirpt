@@ -53,12 +53,11 @@ function sendHttpRequest(method, url, data) {
 //Create GET REQUEST
 async function fetchPost() {
 	try {
-		const responseData = await sendHttpRequest(
-			'GET',
-			'https://jsonplaceholder.typicode.com/posts'
+		const responseData = await axios.get(
+			'https://jsonplaceholder.typicode.com/pos'
 		);
 
-		const listOfPosts = responseData;
+		const listOfPosts = responseData.data;
 		for (const post of listOfPosts) {
 			const postEl = document.importNode(postTemplate.content, true);
 
@@ -71,6 +70,7 @@ async function fetchPost() {
 		}
 	} catch (error) {
 		alert(error.message);
+		console.log(error.response);
 	}
 }
 
@@ -82,7 +82,11 @@ async function createPost(title, content) {
 		body: content,
 		userId: userId,
 	};
-	sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', post);
+	const response = await axios.post(
+		'https://jsonplaceholder.typicode.com/posts',
+		post
+	);
+	console.log(response);
 }
 
 //adding Event to the fetchButton
