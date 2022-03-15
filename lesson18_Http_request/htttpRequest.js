@@ -55,7 +55,7 @@ async function fetchPost() {
 	try {
 		const responseData = await sendHttpRequest(
 			'GET',
-			'https://jsonplaceholder.typicode.com/pos'
+			'https://jsonplaceholder.typicode.com/posts'
 		);
 
 		const listOfPosts = responseData;
