@@ -1,6 +1,4 @@
-import { ProjectList } from './App/ProjectList.js';
-
-globalThis.DEFAULT_VALUE = 'MAX';
+import { ProjectList } from './App/ProjectList';
 
 //just watch the videos of section 21 -javascript tools
 class App {
