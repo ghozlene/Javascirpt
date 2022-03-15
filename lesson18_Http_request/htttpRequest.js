@@ -54,7 +54,7 @@ function sendHttpRequest(method, url, data) {
 async function fetchPost() {
 	try {
 		const responseData = await axios.get(
-			'https://jsonplaceholder.typicode.com/pos'
+			'https://jsonplaceholder.typicode.com/posts'
 		);
 
 		const listOfPosts = responseData.data;
@@ -104,9 +104,6 @@ form.addEventListener('submit', (event) => {
 postList.addEventListener('click', (event) => {
 	if (event.target.tagName === 'BUTTON') {
 		const posId = event.target.closest('li').id;
-		sendHttpRequest(
-			'DELETE',
-			`https://jsonplaceholder.typicode.com/posts/${posId}`
-		);
+		axios.delete(`https://jsonplaceholder.typicode.com/posts/${posId}`);
 	}
 });
